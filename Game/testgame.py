@@ -7,13 +7,6 @@ x = 500
 y = 400
 width = 64
 height = 64
-velocity = 5
-run = True
-is_jump = False
-jump_count = 10
-left = False
-right = False
-walkCount = 0
 
 
 walkRight = [pygame.image.load('R1.png'), pygame.image.load('R2.png'),
@@ -28,56 +21,75 @@ walkLeft = [pygame.image.load('L1.png'), pygame.image.load('L2.png'),
             pygame.image.load('L9.png')]
 bg = pygame.image.load('bg.jpg')
 char = pygame.image.load('standing.png')
+clock = pygame.time.Clock()
 
+class player(object):
+    def __init__(self, x, y, width, height):
+        self.x=x
+        self.y=y
+        self.width=width
+        self.height=height
+        self.velocity = 5
+        self.run = True
+        self.is_jump = False
+        self.jump_count = 10
+        self.left = False
+        self.right = False
+        self.walkCount = 0
+    def draw(self, window):
+        if self.walkCount + 1 >= 27:
+            self.walkCount = 0
+        if self.left:
+            window.blit(walkLeft[self.walkCount//3], (self.x,self.y))
+
+
+
+            self.walkCount += 1
+        elif self.right:
+            window.blit(walkRight[self.walkCount//3], (self.x,self.y))
+            self.walkCount += 1
+        else:
+            window.blit(char, (self.x, self.y))
 def redraw_GameWindow():
-    global walkCount
-    global left
-    global right
     window.blit(bg, (0,0))
-
-    if walkCount + 1 >- 27:
-        walkCount = 0
-
-    if left:
-        window.blit(walkLeft[walkCount//3], (x,y))
-
-        walkCount += 1
-    elif right:
-        window.blit(walkRight[walkCount//3], (x,y))
-        walkCount += 1
-    else:
-        window.blit(char, (x,y))
-        walkCount = 0
+    player_character.draw(window)
     pygame.display.update()
 
+run=True
+player_character=player(300,410,64,64)
 while run:
-    clock = pygame.time.Clock()
     clock.tick(27)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and x > velocity:
-        x -= velocity
-        left = True
-        right = False
-    elif keys[pygame.K_RIGHT] and x < 500 - velocity - width:
-        x += velocity
-        left = False
-        right = True
+    if keys[pygame.K_LEFT] and player_character.x > player_character.velocity:
+       player_character.x -= player_character.velocity
+       player_character.left = True
+       player_character.right = False
+    elif keys[pygame.K_RIGHT] and player_character.x < 500 - player_character.velocity - player_character.width:
+        player_character.x += player_character.velocity
+        player_character.left = False
+        player_character.right = True
     else:
-        left = False
-        right = False
-    if not (is_jump):
-        if keys[pygame.K_UP] and y > velocity:
-            y -= velocity
-        if keys[pygame.K_DOWN] and y < 500 - velocity - height:
-            y += velocity
+        player_character.left = False
+        player_character.right = False
+    if not (player_character.is_jump):
         if keys[pygame.K_SPACE]:
-            is_jump = True
+            player_character.is_jump = True
+            player_character.right = False
+            player_character.left = False
+            player_character.walkCount = 0
     else:
-        jump_count = 10
-        is_jump = False
+        if player_character.jump_count >= -10:
+            negitive = 1
+            if player_character.jump_count < 0:
+                negitive = -1
+            player_character.y -= (player_character.jump_count ** 2) * 0.5 * negitive
+            player_character.jump_count -= 1
+        else:
+            player_character.is_jump = False
+            player_character.jump_count = 10
 
-redraw_GameWindow()
+    redraw_GameWindow()
