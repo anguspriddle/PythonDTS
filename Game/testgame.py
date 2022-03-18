@@ -65,6 +65,7 @@ def redraw_GameWindow():
 
 #---------------------------- Main Routine ----------------------------
 run=True
+
 player_character=player(300,410,64,64) # Object created from the class which sends information to the pass through variables
 while run:
     clock.tick(27)
