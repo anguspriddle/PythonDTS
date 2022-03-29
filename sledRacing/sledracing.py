@@ -11,7 +11,7 @@ y = 100
 width = 64
 height = 64
 enemyY = 600
-enemyx = randint(330, 930)
+enemyx = 500
 rise_velocity = 5
 #-- Variables and lists --
 bg = pygame.image.load('bg.png')
@@ -30,16 +30,31 @@ class player(object):
         self.left = False
         self.right = False
         self.walkCount = 0
-        self.charhitbox = char.get_rect(topleft = (x, y))
+        self.hitbox = (self.x + 27, self.y + 40, 39, 50)
+        self.rect = pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
     def draw(self, window):
-            window.blit(char, (self.x, self.y))
-
-
+        window.blit(char, (self.x, self.y))
+        self.hitbox = (self.x + 27, self.y + 40, 39, 50)
+        self.rect = pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
+    def collision(self):
+        print("Collision")
+class enemy(object):
+    def __init__(self, enemyx, enemyY, width, height):
+        self.x=enemyx
+        self.y=enemyY
+        self.width=width
+        self.height=height
+        self.rise=rise_velocity
+        self.hitbox = (self.x + 30, self.y + 50, 48, 35)
+        self.rect = pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
+    def draw(self, window):
+        window.blit(bad, (self.x, self.y))
+        self.hitbox = (self.x + 28, self.y + 50, 48, 35)
+        self.rect = pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 def redraw_GameWindow():
     window.blit(bg, (0, 0))
     player_character.draw(window)
-    badhitbox = bad.get_rect(topleft=(10, 10))
-    window.blit(bad, (enemyx, enemyY))
+    enemy_object.draw(window)
     pygame.display.update()
 
 
@@ -47,6 +62,7 @@ score = 0
 run = True
 
 player_character=player(500, 100, 64, 64)
+enemy_object=enemy(500, 100, 64, 64)
 while run:
     clock.tick(60)
     for event in pygame.event.get():
@@ -57,11 +73,11 @@ while run:
        player_character.x -= player_character.velocity
     elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
         player_character.x += player_character.velocity
-    enemyY -= rise_velocity
-    if enemyY == 0:
+    enemy_object.y -= enemy_object.rise
+    if enemy_object.y == 0:
         print("Game over")
-        enemyY = 600
-        enemyx = randint(330, 930)
-    if player_character.charhitbox.colliderect(badhitbox):
-        print("Grah")
+        enemy_object.y = 600
+        enemy_object.x = randint(330, 930)
+    if enemy_object.rect.colliderect(player_character.rect):
+
     redraw_GameWindow()
