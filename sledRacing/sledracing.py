@@ -4,6 +4,8 @@ from pygame import time
 from time import sleep
 pygame.init()
 window = pygame.display.set_mode((1100, 650))
+pygame.display.set_caption("Danger Sledding")
+Points = 0
 x = 500
 y = 100
 width = 64
@@ -16,7 +18,6 @@ bg = pygame.image.load('bg.png')
 char = pygame.image.load('racer.png')
 bad = pygame.image.load('rock.png')
 clock = pygame.time.Clock()
-badhitbox = bad.get_rect(topleft = (enemyx, enemyY))
 
 
 class AbstractGroup:
@@ -64,12 +65,18 @@ def redraw_GameWindow():
     window.blit(bg, (0, 0))
     player_character.draw(window)
     enemy_object.draw(window)
+    text=font.render("Score: " +str(Points), 1,(0, 0, 0))
+    window.blit(text, (50, 10))
     pygame.display.update()
 
+def redrawEndgame_window():
+    window.blit(bg, (0, 0))
+    pygame.display.update()
 
 score = 0
 run = True
 alive = True
+font=pygame.font.SysFont("comicsansms", 30, True, True)
 player_character=player(500, 100, 64, 64)
 enemy_object=enemy(500, 600, 64, 64)
 while run:
@@ -77,18 +84,32 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and player_character.x > 230 - player_character.velocity - player_character.width:
-       player_character.x -= player_character.velocity
-    elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
-        player_character.x += player_character.velocity
-    enemy_object.y -= enemy_object.rise
-    if player_character.rect.colliderect(enemy_object.rect):
-        print("Collision")
-        player_character.kill()
-    if enemy_object.y == 0:
-        print("Game over")
-        enemy_object.y = 600
-        enemy_object.x = randint(330, 930)
-        run = False
-    redraw_GameWindow()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            run = False
+    while alive:
+        clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                alive = False
+                run = False
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and player_character.x > 230 - player_character.velocity - player_character.width:
+           player_character.x -= player_character.velocity
+        elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
+            player_character.x += player_character.velocity
+        enemy_object.y -= enemy_object.rise
+        if keys[pygame.K_ESCAPE]:
+            run = False
+            alive = False
+        if player_character.rect.colliderect(enemy_object.rect):
+            print("Collision")
+            print(Points)
+            player_character.kill()
+            alive = False
+        if enemy_object.y == 0:
+            Points += 1
+            enemy_object.y = 600
+            enemy_object.x = randint(330, 930)
+        redraw_GameWindow()
+    redrawEndgame_window()
