@@ -14,11 +14,15 @@ width = 64
 height = 64
 enemyY = 600
 enemyx = 500
+enemy2y = 600
+enemy2x = 500
 rise_velocity = 5
+riseVelocity2 = 7
 bg = pygame.image.load('bg.png')
 char = pygame.image.load('racer.png')
 bad = pygame.image.load('rock.png')
 title = pygame.image.load('title.png')
+bad2 = pygame.image.load('rock2.png')
 clock = pygame.time.Clock()
 
 #Classes
@@ -54,15 +58,34 @@ class enemy(object):
         window.blit(bad, (self.x, self.y))
         self.hitbox = (self.x + 28, self.y + 50, 48, 35)
         self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+
+class enemy2(object):
+    def __init__(self, enemy2x, enemy2y, width, height):
+        self.x=enemy2x
+        self.y=enemy2y
+        self.width=width
+        self.height=height
+        self.rise=riseVelocity2
+        self.hitbox = (self.x+30, self.y+50, 48, 35)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+    def draw(self, window):
+        window.blit(bad2, (self.x, self.y)) # add image for second obstacle here
+        self.hitbox = (self.x + 30, self.y + 50, 48, 35)
+        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+
+
+
 def redraw_GameWindow():
     window.blit(bg, (0, 0))
     player_character.draw(window)
     enemy_object.draw(window)
+    if Points >= 10:
+        enemyObject2.draw(window)
     text=font.render("Score: " +str(Points), 1,(0, 0, 0))
     window.blit(text, (50, 10))
     pygame.display.update()
 
-def redrawEndgame_window():
+def endGame_window():
     window.blit(title, (0, 0))
     text = font.render("You scored " + str(Points) + " Points!", 1, (0, 0, 0))
     text2 = font2.render("You Died!", 1, (0, 0, 0))
@@ -70,44 +93,88 @@ def redrawEndgame_window():
     window.blit(text2, (400, 200))
     pygame.display.update()
 
+def mainMenu_window():
+    window.blit(title, (0, 0))
+    titleText = font.render("Danger Sledding", 1, (0, 0, 0))
+    pressPlay_Text = font2.render("Press Space To Start", 1, (0, 0, 0))
+    window.blit(titleText, (500, 100))
+    window.blit(pressPlay_Text, (325, 550))
+    pygame.display.update()
+
 # Main game
 score = 0
 run = True
-alive = True
+endgame = False
+alive = False
+keys = pygame.key.get_pressed()
+mainMenu = True
 font=pygame.font.SysFont("comicsansms", 30, True, True) # Setsup fonts for the score and end game screen.
 font2=pygame.font.SysFont("comicsansms", 60, True, True)
 player_character=player(500, 100, 64, 64) # Setting passthrough variables for the player and the enemies
 enemy_object=enemy(500, 600, 64, 64)
+enemyObject2 = enemy2(500, 650, 64, 64)
 while run: # This is the game loop
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+    while mainMenu: # Runs Main Menu On Start of game.
+        clock.tick(60)
         keys = pygame.key.get_pressed()
+        mainMenu_window()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                mainMenu = False
         if keys[pygame.K_ESCAPE]:
             run = False
+            mainMenu = False
+        if keys[pygame.K_SPACE]: # Switches to main game on press of spacebar
+            enemy_object.y = 500
+            alive = True
+            mainMenu = False
+
     while alive:
         clock.tick(60)
+        keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 alive = False
                 run = False
-        keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and player_character.x > 230 - player_character.velocity - player_character.width:
            player_character.x -= player_character.velocity
         elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
             player_character.x += player_character.velocity
         enemy_object.y -= enemy_object.rise
+        enemyObject2.y -= enemyObject2.rise
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
         if player_character.rect.colliderect(enemy_object.rect): # Upon collision, goes to end game screen and stops
                                                                  # The main game loop of 'alive'
             alive = False
+            endgame = True
         if enemy_object.y == 0: # Resets the Y value of the enemy and places it at a random x value
                                 # To have a constant flow of enemies one after the other
             Points += 1   # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(330, 930)
+            enemy_object.x = randint(200, 890)
+        elif enemyObject2.y == 0:
+            Points += 1
+            enemyObject2.y = 600
+            enemyObject2.x = randint(200, 890)
         redraw_GameWindow()
-    redrawEndgame_window()
+    while endgame:
+        clock.tick(60)
+        endGame_window()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                endgame = False
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            run = False
+            endgame = False
+        if keys[pygame.K_b]:
+            endgame = False
+            mainMenu = True
