@@ -14,17 +14,24 @@ width = 64
 height = 64
 enemyY = 600
 enemyx = 500
-enemy2y = 660
 enemy2x = 400
-rise_velocity = 7
+enemy3x = 400
+rise_velocity = 5
 riseVelocity2 = 5
+score = 0
+run = True
+endgame = False
+alive = False
+mainMenu = True
+font=pygame.font.SysFont("cambri", 30, True, True) # Setsup fonts for the score and end game screen.
+font2=pygame.font.SysFont("cambri", 60, True, True)
 bg = pygame.image.load('bg.png')
 char = pygame.image.load('racer.png')
 bad = pygame.image.load('rock.png')
 title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
+bad3 = pygame.image.load('rock3.png')
 clock = pygame.time.Clock()
-obstacles = []
 
 #Classes
 class player(object):
@@ -61,9 +68,9 @@ class enemy(object):
         self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
 
 class enemy2(object):
-    def __init__(self, enemy2x, enemy2y, width, height):
+    def __init__(self, enemy2x, enemyY, width, height):
         self.x=enemy2x
-        self.y=enemy2y
+        self.y=enemyY
         self.width=width
         self.height=height
         self.rise=rise_velocity
@@ -71,6 +78,20 @@ class enemy2(object):
         self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(bad2, (self.x, self.y)) # add image for second obstacle here
+        self.hitbox = (self.x + 30, self.y + 50, 48, 35)
+        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+
+class enemy3(object):
+    def __init__(self, enemy3x, enemyY, width, height):
+        self.x=enemy3x
+        self.y=enemyY
+        self.width=width
+        self.height=height
+        self.rise=rise_velocity
+        self.hitbox = (self.x+30, self.y+50, 48, 35)
+        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+    def draw(self, window):
+        window.blit(bad3, (self.x, self.y)) # add image for second obstacle here
         self.hitbox = (self.x + 30, self.y + 50, 48, 35)
         self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
 
@@ -102,17 +123,10 @@ def mainMenu_window():
     pygame.display.update()
 
 # Main game
-score = 0
-run = True
-endgame = False
-alive = False
-keys = pygame.key.get_pressed()
-mainMenu = True
-font=pygame.font.SysFont("cambri", 30, True, True) # Setsup fonts for the score and end game screen.
-font2=pygame.font.SysFont("cambri", 60, True, True)
 player_character=player(500, 100, 64, 64) # Setting passthrough variables for the player and the enemies
 enemy_object=enemy(500, 600, 64, 64)
 enemyObject2 = enemy2(500, 650, 64, 64)
+enemyObject3 = enemy3(500, 600, 64, 64)
 while run: # This is the game loop
     clock.tick(60)
     for event in pygame.event.get():
@@ -153,7 +167,7 @@ while run: # This is the game loop
         if Points >= 5:
             enemyObject2.y -= enemyObject2.rise
         if Points >= 10:
-            enemy_object
+            enemyObject3.y -= enemyObject3.rise
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
