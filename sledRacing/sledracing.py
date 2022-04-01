@@ -4,7 +4,7 @@ from random import randint
 from pygame import time
 from time import sleep
 pygame.init()
-window = pygame.display.set_mode((1100, 650)) # Sets window size to 1100 x 650
+window = pygame.display.set_mode((1100, 645)) # Sets window size to 1100 x 645
 pygame.display.set_caption("Danger Sledding") # Sets window name
 # Variables And Lists
 Points = 0
@@ -14,16 +14,17 @@ width = 64
 height = 64
 enemyY = 600
 enemyx = 500
-enemy2y = 600
-enemy2x = 500
-rise_velocity = 5
-riseVelocity2 = 7
+enemy2y = 660
+enemy2x = 400
+rise_velocity = 7
+riseVelocity2 = 5
 bg = pygame.image.load('bg.png')
 char = pygame.image.load('racer.png')
 bad = pygame.image.load('rock.png')
 title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
 clock = pygame.time.Clock()
+obstacles = []
 
 #Classes
 class player(object):
@@ -37,12 +38,12 @@ class player(object):
         self.left = False
         self.right = False
         self.walkCount = 0
-        self.hitbox = (self.x + 27, self.y + 40, 39, 50)
-        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+        self.hitbox = (self.x + 27, self.y + 40, 42, 50)
+        self.rect = pygame.draw.rect(window, (0, 255, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(char, (self.x, self.y))
-        self.hitbox = (self.x + 27, self.y + 40, 39, 50)
-        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+        self.hitbox = (self.x + 27, self.y + 40, 42, 50)
+        self.rect = pygame.draw.rect(window, (0, 255, 255), self.hitbox, 2)
 
 
 class enemy(object):
@@ -53,11 +54,11 @@ class enemy(object):
         self.height=height
         self.rise=rise_velocity
         self.hitbox = (self.x + 30, self.y + 50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(bad, (self.x, self.y))
         self.hitbox = (self.x + 28, self.y + 50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
 
 class enemy2(object):
     def __init__(self, enemy2x, enemy2y, width, height):
@@ -65,9 +66,9 @@ class enemy2(object):
         self.y=enemy2y
         self.width=width
         self.height=height
-        self.rise=riseVelocity2
+        self.rise=rise_velocity
         self.hitbox = (self.x+30, self.y+50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(bad2, (self.x, self.y)) # add image for second obstacle here
         self.hitbox = (self.x + 30, self.y + 50, 48, 35)
@@ -79,8 +80,7 @@ def redraw_GameWindow():
     window.blit(bg, (0, 0))
     player_character.draw(window)
     enemy_object.draw(window)
-    if Points >= 10:
-        enemyObject2.draw(window)
+    enemyObject2.draw(window)
     text=font.render("Score: " +str(Points), 1,(0, 0, 0))
     window.blit(text, (50, 10))
     pygame.display.update()
@@ -108,8 +108,8 @@ endgame = False
 alive = False
 keys = pygame.key.get_pressed()
 mainMenu = True
-font=pygame.font.SysFont("comicsansms", 30, True, True) # Setsup fonts for the score and end game screen.
-font2=pygame.font.SysFont("comicsansms", 60, True, True)
+font=pygame.font.SysFont("cambri", 30, True, True) # Setsup fonts for the score and end game screen.
+font2=pygame.font.SysFont("cambri", 60, True, True)
 player_character=player(500, 100, 64, 64) # Setting passthrough variables for the player and the enemies
 enemy_object=enemy(500, 600, 64, 64)
 enemyObject2 = enemy2(500, 650, 64, 64)
@@ -133,6 +133,7 @@ while run: # This is the game loop
             enemy_object.y = 500
             alive = True
             mainMenu = False
+            endgame = False
 
     while alive:
         clock.tick(60)
@@ -141,12 +142,18 @@ while run: # This is the game loop
             if event.type == pygame.QUIT:
                 alive = False
                 run = False
-        if keys[pygame.K_LEFT] and player_character.x > 230 - player_character.velocity - player_character.width:
+        # for obstacle in obstacles:
+             # if enemy_object.x < 855 and enemy_object.x > 150:
+                # enemy_object.y -= enemy_object.rise
+        if keys[pygame.K_LEFT] and player_character.x > 250 - player_character.velocity - player_character.width:
            player_character.x -= player_character.velocity
         elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
             player_character.x += player_character.velocity
         enemy_object.y -= enemy_object.rise
-        enemyObject2.y -= enemyObject2.rise
+        if Points >= 5:
+            enemyObject2.y -= enemyObject2.rise
+        if Points >= 10:
+            enemy_object
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
@@ -154,15 +161,18 @@ while run: # This is the game loop
                                                                  # The main game loop of 'alive'
             alive = False
             endgame = True
-        if enemy_object.y == 0: # Resets the Y value of the enemy and places it at a random x value
+        if enemy_object.y == -100: # Resets the Y value of the enemy and places it at a random x value
                                 # To have a constant flow of enemies one after the other
             Points += 1   # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(200, 890)
-        elif enemyObject2.y == 0:
-            Points += 1
+            enemy_object.x = randint(150, 855)
+            if enemy_object.x == enemyObject2.x:
+                enemy_object.x = randint(150, 855)
+        if enemyObject2.y <= -100:
             enemyObject2.y = 600
-            enemyObject2.x = randint(200, 890)
+            enemyObject2.x = randint(180, 840)
+            if enemyObject2.x == enemy_object.x:
+                enemyObject2.x = randint(180, 840)
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
