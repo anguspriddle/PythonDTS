@@ -16,15 +16,15 @@ enemyY = 600
 enemyx = 500
 enemy2y = 660
 enemy2x = 400
-rise_velocity = 5
-riseVelocity2 = 5
+rise_velocity = [5, 7, 3, 8]
+ranVel = randint(0, 3)
+riseVelocity = rise_velocity[ranVel]
 bg = pygame.image.load('bg.png')
 char = pygame.image.load('racer.png')
 bad = pygame.image.load('rock.png')
 title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
 clock = pygame.time.Clock()
-obstacles = []
 
 #Classes
 class player(object):
@@ -66,7 +66,7 @@ class enemy2(object):
         self.y=enemy2y
         self.width=width
         self.height=height
-        self.rise=rise_velocity
+        self.rise=riseVelocity
         self.hitbox = (self.x+30, self.y+50, 48, 35)
         self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
     def draw(self, window):
@@ -149,9 +149,9 @@ while run: # This is the game loop
            player_character.x -= player_character.velocity
         elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
             player_character.x += player_character.velocity
-        enemy_object.y -= enemy_object.rise
+        enemy_object.y -= riseVelocity
         if Points >= 5:
-            enemyObject2.y -= enemyObject2.rise
+            enemyObject2.y -= riseVelocity
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
@@ -159,14 +159,16 @@ while run: # This is the game loop
                                                                  # The main game loop of 'alive'
             alive = False
             endgame = True
-        if enemy_object.y == 0: # Resets the Y value of the enemy and places it at a random x value
+        if enemy_object.y < 0: # Resets the Y value of the enemy and places it at a random x value
                                 # To have a constant flow of enemies one after the other
             Points += 1   # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(150, 855)
-        if enemyObject2.y == 0:
+            enemy_object.x = randint(150, 300)
+            ranVel = randint(0, 3)
+            riseVelocity = rise_velocity[ranVel]
+        if enemyObject2.y < 0:
             enemyObject2.y = 600
-            enemyObject2.x = randint(180, 840)
+            enemyObject2.x = randint(500, 855)
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
