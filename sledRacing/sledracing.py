@@ -1,12 +1,12 @@
 # Imports and setups
 import pygame
 from random import randint
-from pygame import time
-from time import sleep
+from pygame import mixer
 pygame.init()
 window = pygame.display.set_mode((1100, 645)) # Sets window size to 1100 x 645
 pygame.display.set_caption("Danger Sledding") # Sets window name
-
+icon = pygame.image.load('icon2.png')
+pygame.display.set_icon(icon)
 # Variables And Lists
 Points = 0
 startx = 500
@@ -33,7 +33,10 @@ bad2 = pygame.image.load('rock2.png')
 log = pygame.image.load('log.png')
 boulder = pygame.image.load('rock3.png')
 clock = pygame.time.Clock()
-
+font=pygame.freetype.Font("Penguin.ttf", 50) # Setsup fonts for the score and end game screen.
+font2=pygame.freetype.Font("Penguin.ttf", 40)
+font3=pygame.freetype.Font("Icecold.ttf", 20)
+pygame.mixer.music.load('mainTheme.mp3')
 #Classes
 class player(object):
     def __init__(self, startx, starty, width, height):
@@ -135,11 +138,7 @@ def mainMenu_window():
 run = True
 endgame = False
 alive = False
-keys = pygame.key.get_pressed()
 mainMenu = True
-font=pygame.freetype.Font("Penguin.ttf", 50) # Setsup fonts for the score and end game screen.
-font2=pygame.freetype.Font("Penguin.ttf", 40)
-font3=pygame.freetype.Font("Icecold.ttf", 20)
 player_character=player(500, 100, 64, 64) # Setting passthrough variables for the player and the enemies
 enemy_object=enemy(500, 600, 64, 64)
 enemyObject2 = enemy2(500, 650, 64, 64)
@@ -153,6 +152,7 @@ while run: # This is the game loop
     while mainMenu: # Runs Main Menu On Start of game.
         clock.tick(60)
         keys = pygame.key.get_pressed()
+        pygame.mixer.Sound.play(music)
         mainMenu_window()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -170,6 +170,7 @@ while run: # This is the game loop
 
     while alive:
         clock.tick(60)
+        pygame.mixer.music.play()
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -178,9 +179,6 @@ while run: # This is the game loop
         if lives == 0:
             alive = False
             endgame = True
-        # for obstacle in obstacles:
-             # if enemy_object.x < 855 and enemy_object.x > 150:
-                # enemy_object.y -= enemy_object.rise
         if keys[pygame.K_LEFT] and player_character.x > 250 - player_character.velocity - player_character.width:
            player_character.x -= player_character.velocity
         elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
@@ -194,8 +192,6 @@ while run: # This is the game loop
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
-        if keys[pygame.K_a]:
-            Points = Points + 1
         if player_character.rect.colliderect(enemy_object.rect) or player_character.rect.colliderect(enemyObject2.rect)\
             or player_character.rect.colliderect(logEnemy.rect): # Upon collision, goes to end game screen and stops
             lives -= 1
@@ -234,6 +230,3 @@ while run: # This is the game loop
         if keys[pygame.K_ESCAPE]:
             run = False
             endgame = False
-        if keys[pygame.K_b]:
-            endgame = False
-            mainMenu = True
