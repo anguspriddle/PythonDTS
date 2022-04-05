@@ -18,6 +18,7 @@ enemy2y = 660
 enemy2x = 400
 logX = 660
 logY = 700
+lives = 3
 rise_velocity = [5, 7, 3, 8]
 ranVel = randint(0, 3)
 riseVelocity = rise_velocity[ranVel]
@@ -155,6 +156,9 @@ while run: # This is the game loop
             if event.type == pygame.QUIT:
                 alive = False
                 run = False
+        if lives == 0:
+            alive = False
+            endgame = True
         # for obstacle in obstacles:
              # if enemy_object.x < 855 and enemy_object.x > 150:
                 # enemy_object.y -= enemy_object.rise
@@ -169,17 +173,17 @@ while run: # This is the game loop
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
-        if player_character.rect.colliderect(enemy_object.rect): # Upon collision, goes to end game screen and stops
-                                                                 # The main game loop of 'alive'
-            alive = False
-            endgame = True
+        if player_character.rect.colliderect(enemy_object.rect) or player_character.rect.colliderect(enemyObject2.rect)\
+            or player_character.rect.colliderect(logEnemy.rect): # Upon collision, goes to end game screen and stops
+            lives -= 1
+            print(lives)
         if enemy_object.y < 0: # Resets the Y value of the enemy and places it at a random x value
                                 # To have a constant flow of enemies one after the other
             Points += 1   # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(150, 300)
+            enemy_object.x = randint(155, 300)
             if enemy_object.rect.colliderect(enemyObject2.rect):
-                 enemy_object.x = randint(150, 300)
+                 enemy_object.x = randint(155, 300)
             ranVel = randint(0, 3)
             riseVelocity = rise_velocity[ranVel]
         if enemyObject2.y < 0:
@@ -188,8 +192,11 @@ while run: # This is the game loop
         if logEnemy.y < 0:
             logEnemy.y = 600
             logEnemy.x = randint(150, 855)
-            if logEnemy.rect.colliderect(enemyObject2.rect):
+            if logEnemy.x == enemyObject2.x:
                 logEnemy.x = randint(150, 855)
+            elif logEnemy.x == enemy_object.x:
+                logEnemy.x = randint(150, 855)
+
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
