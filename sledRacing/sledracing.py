@@ -6,6 +6,7 @@ from time import sleep
 pygame.init()
 window = pygame.display.set_mode((1100, 645)) # Sets window size to 1100 x 645
 pygame.display.set_caption("Danger Sledding") # Sets window name
+
 # Variables And Lists
 Points = 0
 startx = 500
@@ -18,6 +19,8 @@ enemy2y = 660
 enemy2x = 400
 logX = 660
 logY = 700
+boulderX = 800
+boulderY = 700
 lives = 3
 rise_velocity = [5, 7, 3, 8]
 ranVel = randint(0, 3)
@@ -28,6 +31,7 @@ bad = pygame.image.load('rock.png')
 title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
 log = pygame.image.load('log.png')
+boulder = pygame.image.load('rock3.png')
 clock = pygame.time.Clock()
 
 #Classes
@@ -84,12 +88,25 @@ class logEnemy(object):
         self.y=logY
         self.width=width
         self.height=height
-        self.hitbox = (self.x + 70, self.y+30, 50, 50)
+        self.hitbox = (self.x + 40, self.y+50, 100, 29)
         self.rect = pygame.draw.rect(window, (225, 0, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(log, (self.x, self.y))
-        self.hitbox = (self.x + 70, self.y + 30, 50, 50)
+        self.hitbox = (self.x + 40, self.y + 50, 100, 29)
         self.rect = pygame.draw.rect(window, (225, 0, 255), self.hitbox, 2)
+
+class boulderEnemy(object):
+     def __init__(self, boulderX, boulderY, width, height):
+         self.x=boulderX
+         self.y=boulderY
+         self.width=width
+         self.height=height
+         self.hitbox= (self.x + 8, self.y+39, 70, 30)
+         self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+     def draw(self, window):
+            window.blit(boulder, (self.x, self.y))
+            self.hitbox = (self.x + 8, self.y + 39, 70, 30)
+            self.rect = pygame.draw.rect(window, (225, 0, 255), self.hitbox, 2)
 
 
 def redraw_GameWindow():
@@ -98,6 +115,7 @@ def redraw_GameWindow():
     enemy_object.draw(window)
     enemyObject2.draw(window)
     logEnemy.draw(window)
+    boulderEnemy.draw(window)
     font3.render_to(window, (50, 10), "Score:{}" .format(Points))
     pygame.display.update()
 
@@ -126,6 +144,7 @@ player_character=player(500, 100, 64, 64) # Setting passthrough variables for th
 enemy_object=enemy(500, 600, 64, 64)
 enemyObject2 = enemy2(500, 650, 64, 64)
 logEnemy = logEnemy(660, 400, 64 ,64)
+boulderEnemy = boulderEnemy(800, 700, 64, 64)
 while run: # This is the game loop
     clock.tick(60)
     for event in pygame.event.get():
@@ -170,9 +189,13 @@ while run: # This is the game loop
         if Points >= 5:
             enemyObject2.y -= riseVelocity
             logEnemy.y -= riseVelocity
+        if Points >= 10:
+            boulderEnemy.y -= riseVelocity
         if keys[pygame.K_ESCAPE]: # Closes the game on Escape Button Press
             run = False
             alive = False
+        if keys[pygame.K_a]:
+            Points = Points + 1
         if player_character.rect.colliderect(enemy_object.rect) or player_character.rect.colliderect(enemyObject2.rect)\
             or player_character.rect.colliderect(logEnemy.rect): # Upon collision, goes to end game screen and stops
             lives -= 1
@@ -196,7 +219,9 @@ while run: # This is the game loop
                 logEnemy.x = randint(150, 855)
             elif logEnemy.x == enemy_object.x:
                 logEnemy.x = randint(150, 855)
-
+        if boulderEnemy.y < 0:
+            boulderEnemy.y = 600
+            boulderEnemy.x = randint(150, 855)
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
