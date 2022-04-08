@@ -2,12 +2,13 @@
 import pygame
 from random import randint
 from pygame import mixer
+pygame.mixer.pre_init(44100, -16, 2, 6000)
 pygame.init()
 window = pygame.display.set_mode((1100, 645)) # Sets window size to 1100 x 645
 pygame.display.set_caption("Danger Sledding") # Sets window name
 icon = pygame.image.load('icon2.png')
 pygame.display.set_icon(icon)
-# Variables And Lists
+# Variables And Lists.
 Points = 0
 startx = 500
 starty = 100
@@ -36,9 +37,9 @@ clock = pygame.time.Clock()
 font=pygame.freetype.Font("Penguin.ttf", 50) # Setsup fonts for the score and end game screen.
 font2=pygame.freetype.Font("Penguin.ttf", 40)
 font3=pygame.freetype.Font("Icecold.ttf", 20)
-pygame.mixer.init(44100, -16, 2, 2048)
 Gameover = mixer.Sound('GameOver.wav')
-MainMusic = mixer.Sound('SledRacing.mp3')
+music = mixer.music.load('SledRacing.mp3')
+pygame.mixer.music.play(-1)
 #Classes
 class player(object):
     def __init__(self, startx, starty, width, height):
@@ -126,8 +127,8 @@ def redraw_GameWindow():
 
 def endGame_window():
     window.blit(title, (0, 0))
-    font.render_to(window, (400, 350), "You scored {} Points!" .format(Points))
-    font2.render_to(window, (400, 200), "You Died!")
+    font.render_to(window, (300, 350), "You scored {} Points!" .format(Points))
+    font2.render_to(window, (400, 150), "You Died!")
     pygame.display.update()
 
 def mainMenu_window():
@@ -172,13 +173,13 @@ while run: # This is the game loop
     while alive:
         clock.tick(60)
         keys = pygame.key.get_pressed()
-        MainMusic.play()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 alive = False
                 run = False
         if lives == 0:
             alive = False
+            playGameOver = True
             endgame = True
         if keys[pygame.K_LEFT] and player_character.x > 250 - player_character.velocity - player_character.width:
            player_character.x -= player_character.velocity
@@ -194,14 +195,15 @@ while run: # This is the game loop
             run = False
             alive = False
         if player_character.rect.colliderect(enemy_object.rect) or player_character.rect.colliderect(enemyObject2.rect)\
-            or player_character.rect.colliderect(logEnemy.rect): # Upon collision, goes to end game screen and stops
+            or player_character.rect.colliderect(logEnemy.rect) or player_character.rect.colliderect(boulderEnemy.rect)\
+                                                                : # Upon collision, goes to end game screen and stops
             lives -= 1
             print(lives)
         if enemy_object.y < 0: # Resets the Y value of the enemy and places it at a random x value
                                 # To have a constant flow of enemies one after the other
             Points += 1   # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(155, 300)
+            enemy_object.x = randint(170, 400)
             if enemy_object.rect.colliderect(enemyObject2.rect):
                  enemy_object.x = randint(155, 300)
             ranVel = randint(0, 3)
@@ -211,7 +213,7 @@ while run: # This is the game loop
             enemyObject2.x = randint(500, 855)
         if logEnemy.y < 0:
             logEnemy.y = 600
-            logEnemy.x = randint(150, 855)
+            logEnemy.x = randint(150, 805)
             if logEnemy.x == enemyObject2.x:
                 logEnemy.x = randint(150, 855)
             elif logEnemy.x == enemy_object.x:
@@ -219,10 +221,15 @@ while run: # This is the game loop
         if boulderEnemy.y < 0:
             boulderEnemy.y = 600
             boulderEnemy.x = randint(150, 855)
+            if boulderEnemy.rect.colliderect(logEnemy.rect):
+                boulderEnemy.x = randint(150, 855)
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
-        Gameover.play()
+        pygame.mixer.music.stop()
+        if playGameOver:
+            Gameover.play()
+            playGameOver = False
         endGame_window()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
