@@ -36,7 +36,9 @@ clock = pygame.time.Clock()
 font=pygame.freetype.Font("Penguin.ttf", 50) # Setsup fonts for the score and end game screen.
 font2=pygame.freetype.Font("Penguin.ttf", 40)
 font3=pygame.freetype.Font("Icecold.ttf", 20)
-pygame.mixer.music.load('mainTheme.mp3')
+pygame.mixer.init(44100, -16, 2, 2048)
+Gameover = mixer.Sound('GameOver.wav')
+MainMusic = mixer.Sound('SledRacing.mp3')
 #Classes
 class player(object):
     def __init__(self, startx, starty, width, height):
@@ -152,7 +154,6 @@ while run: # This is the game loop
     while mainMenu: # Runs Main Menu On Start of game.
         clock.tick(60)
         keys = pygame.key.get_pressed()
-        pygame.mixer.Sound.play(music)
         mainMenu_window()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -170,8 +171,8 @@ while run: # This is the game loop
 
     while alive:
         clock.tick(60)
-        pygame.mixer.music.play()
         keys = pygame.key.get_pressed()
+        MainMusic.play()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 alive = False
@@ -221,6 +222,7 @@ while run: # This is the game loop
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
+        Gameover.play()
         endGame_window()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
