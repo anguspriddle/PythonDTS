@@ -6,8 +6,9 @@ pygame.mixer.pre_init(44100, -16, 2, 6000)
 pygame.init()
 window = pygame.display.set_mode((1100, 645)) # Sets window size to 1100 x 645
 pygame.display.set_caption("Danger Sledding") # Sets window name
-icon = pygame.image.load('icon2.png')
-pygame.display.set_icon(icon)
+icon = pygame.image.load('icon2.png') # This line of code loads in an image to a variable name, for this it loads the
+                                      # Image used for the window icon
+pygame.display.set_icon(icon) # Sets window icon
 # Variables And Lists.
 Points = 0
 startx = 500
@@ -15,7 +16,7 @@ starty = 100
 width = 64
 height = 64
 enemyY = 600
-enemyx = 500
+enemyx = 400
 enemy2y = 660
 enemy2x = 400
 logX = 660
@@ -26,6 +27,7 @@ lives = 3
 rise_velocity = [5, 7, 3, 8]
 ranVel = randint(0, 3)
 riseVelocity = rise_velocity[ranVel]
+# Loading images using pygame.image.load, assigning them to variables
 bg = pygame.image.load('bg.png')
 char = pygame.image.load('racer.png')
 bad = pygame.image.load('rock.png')
@@ -33,8 +35,9 @@ title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
 log = pygame.image.load('log.png')
 boulder = pygame.image.load('rock3.png')
-clock = pygame.time.Clock()
-font=pygame.freetype.Font("Penguin.ttf", 50) # Setsup fonts for the score and end game screen.
+
+clock = pygame.time.Clock() # Makes the pygame clock function simply run under 'clock'
+font=pygame.freetype.Font("Penguin.ttf", 50)
 font2=pygame.freetype.Font("Penguin.ttf", 40)
 font3=pygame.freetype.Font("Icecold.ttf", 20)
 Gameover = mixer.Sound('GameOver.wav')
@@ -201,9 +204,9 @@ while run: # This is the game loop
             print(lives)
         if enemy_object.y < 0: # Resets the Y value of the enemy and places it at a random x value
                                 # To have a constant flow of enemies one after the other
-            Points += 1   # This adds a point every time the enemy is successfully avoided by the player
+            Points += 1         # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(170, 400)
+            enemy_object.x = randint(170, 800)
             if enemy_object.rect.colliderect(enemyObject2.rect):
                  enemy_object.x = randint(155, 300)
             ranVel = randint(0, 3)
