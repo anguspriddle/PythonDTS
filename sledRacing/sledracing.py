@@ -71,11 +71,11 @@ class enemy(object):
         self.height=height
         self.rise=rise_velocity
         self.hitbox = (self.x + 30, self.y + 50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(bad, (self.x, self.y))
         self.hitbox = (self.x + 28, self.y + 50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
 
 class enemy2(object):
     def __init__(self, enemy2x, enemy2y, width, height):
@@ -85,11 +85,11 @@ class enemy2(object):
         self.height=height
         self.rise=riseVelocity
         self.hitbox = (self.x+30, self.y+50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(bad2, (self.x, self.y)) # add image for second obstacle here
         self.hitbox = (self.x + 30, self.y + 50, 48, 35)
-        self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
 
 class logEnemy(object):
     def __init__(self, logX, logY, width, height):
@@ -98,11 +98,11 @@ class logEnemy(object):
         self.width=width
         self.height=height
         self.hitbox = (self.x + 40, self.y+50, 100, 29)
-        self.rect = pygame.draw.rect(window, (225, 0, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (225, 255, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(log, (self.x, self.y))
         self.hitbox = (self.x + 40, self.y + 50, 100, 29)
-        self.rect = pygame.draw.rect(window, (225, 0, 255), self.hitbox, 2)
+        self.rect = pygame.draw.rect(window, (225, 255, 255), self.hitbox, 2)
 
 class boulderEnemy(object):
      def __init__(self, boulderX, boulderY, width, height):
@@ -111,11 +111,11 @@ class boulderEnemy(object):
          self.width=width
          self.height=height
          self.hitbox= (self.x + 8, self.y+39, 70, 30)
-         self.rect = pygame.draw.rect(window, (255, 0, 255), self.hitbox, 2)
+         self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
      def draw(self, window):
             window.blit(boulder, (self.x, self.y))
             self.hitbox = (self.x + 8, self.y + 39, 70, 30)
-            self.rect = pygame.draw.rect(window, (225, 0, 255), self.hitbox, 2)
+            self.rect = pygame.draw.rect(window, (225, 255, 255), self.hitbox, 2)
 
 
 def redraw_GameWindow():
@@ -224,7 +224,11 @@ while run: # This is the game loop
         if boulderEnemy.y < 0:
             boulderEnemy.y = 600
             boulderEnemy.x = randint(150, 855)
-            if boulderEnemy.rect.colliderect(logEnemy.rect):
+            if boulderEnemy.x == logEnemy.x:
+                boulderEnemy.x = randint(150, 855)
+            elif boulderEnemy.x == enemyObject2.x:
+                boulderEnemy.x = randint(150, 855)
+            elif boulderEnemy.x == enemy_object.x:
                 boulderEnemy.x = randint(150, 855)
         redraw_GameWindow()
     while endgame:
