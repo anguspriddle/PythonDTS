@@ -37,12 +37,15 @@ log = pygame.image.load('log.png')
 boulder = pygame.image.load('rock3.png')
 
 clock = pygame.time.Clock() # Makes the pygame clock function simply run under 'clock'
-font=pygame.freetype.Font("Penguin.ttf", 50)
+font=pygame.freetype.Font("Penguin.ttf", 50) # This loads a font to a variable, name for this it uses the Penguin.ttf font, and loads
+                                             # it to the size 50 pixels under the variable name 'font'
 font2=pygame.freetype.Font("Penguin.ttf", 40)
 font3=pygame.freetype.Font("Icecold.ttf", 20)
-Gameover = mixer.Sound('GameOver.wav')
-music = mixer.music.load('SledRacing.mp3')
-pygame.mixer.music.play(-1)
+Gameover = mixer.Sound('GameOver.wav') # This loads audio to a variable name , for this one it loads the game over noise to
+                                       # The variable name Gameover
+music = mixer.music.load('SledRacing.mp3') # This loads music to the game, and allows it to play continuously no matter what loop, unless
+                                           # Changed by command, for this it loads SledRacing.mp3 to the variable 'music'
+pygame.mixer.music.play(-1) # This makes the music variable play on an infinite loop unless stopped by a later command
 #Classes
 class player(object):
     def __init__(self, startx, starty, width, height):
