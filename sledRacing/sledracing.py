@@ -24,7 +24,6 @@ title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
 log = pygame.image.load('log.png')
 boulder = pygame.image.load('rock3.png')
-
 clock = pygame.time.Clock() # Makes the pygame clock function simply run under 'clock'
 font=pygame.freetype.Font("Penguin.ttf", 50) # This loads a font to a variable, name for this it uses the Penguin.ttf font, and loads
                                              # it to the size 50 pixels under the variable name 'font'
@@ -56,7 +55,7 @@ class player(object): # This is a class, a class holds information under one nam
         self.rect = pygame.draw.rect(window, (0, 255, 255), self.hitbox, 2)
 
 
-class enemy(object):
+class enemy(object): # This is the class for the first enemy
     def __init__(self, width, height):
         self.x=400
         self.y=600
@@ -70,7 +69,7 @@ class enemy(object):
         self.hitbox = (self.x + 28, self.y + 50, 48, 35)
         self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
 
-class enemy2(object):
+class enemy2(object): # This is the class for the second enemy
     def __init__(self, width, height):
         self.x=400
         self.y=600
@@ -84,7 +83,7 @@ class enemy2(object):
         self.hitbox = (self.x + 30, self.y + 50, 48, 35)
         self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
 
-class logEnemy(object):
+class logEnemy(object): # This is the class for the longer log enemy
     def __init__(self, width, height):
         self.x=660
         self.y=700
@@ -97,7 +96,7 @@ class logEnemy(object):
         self.hitbox = (self.x + 40, self.y + 50, 100, 29)
         self.rect = pygame.draw.rect(window, (225, 255, 255), self.hitbox, 2)
 
-class boulderEnemy(object):
+class boulderEnemy(object): # This is the class for the boulder enemy
      def __init__(self, width, height):
          self.x=800
          self.y=700
