@@ -17,7 +17,7 @@ width = 64
 height = 64
 enemyY = 600
 enemyx = 400
-enemy2y = 660
+enemy2y = 600
 enemy2x = 400
 logX = 660
 logY = 700
@@ -121,30 +121,31 @@ class boulderEnemy(object):
             self.rect = pygame.draw.rect(window, (225, 255, 255), self.hitbox, 2)
 
 
-def redraw_GameWindow():
+def redraw_GameWindow(): # These are functions, they are defined functions that do certain things and can be called later on
+                         # This function draws the main game window
     window.blit(bg, (0, 0))
-    player_character.draw(window)
+    player_character.draw(window)  # Calls the draw functions of all players and enemies
     enemy_object.draw(window)
     enemyObject2.draw(window)
     logEnemy.draw(window)
     boulderEnemy.draw(window)
-    font3.render_to(window, (50, 10), "Score:{}" .format(Points))
-    pygame.display.update()
+    font3.render_to(window, (50, 10), "Score:{}" .format(Points)) # Displays score in the top right
+    pygame.display.update() # This updates the display in a loop, otherwise it would flash for 1 frame and stop.
 
-def endGame_window():
+def endGame_window(): # This is a function that will draw the end game window
     window.blit(title, (0, 0))
     font.render_to(window, (300, 350), "You scored {} Points!" .format(Points))
     font2.render_to(window, (400, 150), "You Died!")
     pygame.display.update()
 
-def mainMenu_window():
+def mainMenu_window(): # This is the function that will display the main menu
     window.blit(title, (0, 0))
     font.render_to(window, (300, 170), "Danger Sledding +")
     font2.render_to(window, (300, 500), "Press Space To Play")
     pygame.display.update()
 
 # Main game
-run = True
+run = True # Turns on run loop on open
 endgame = False
 alive = False
 mainMenu = True
@@ -153,7 +154,8 @@ enemy_object=enemy(500, 600, 64, 64)
 enemyObject2 = enemy2(500, 650, 64, 64)
 logEnemy = logEnemy(660, 400, 64 ,64)
 boulderEnemy = boulderEnemy(800, 700, 64, 64)
-while run: # This is the game loop
+while run: # This is the game loop, the while statement means that while a variable is set to True, the code will loop
+           # Until the variable is set to False.
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -188,6 +190,7 @@ while run: # This is the game loop
             playGameOver = True
             endgame = True
         if keys[pygame.K_LEFT] and player_character.x > 250 - player_character.velocity - player_character.width:
+            # This shows how
            player_character.x -= player_character.velocity
         elif keys[pygame.K_RIGHT] and player_character.x < 930 - player_character.velocity - player_character.width:
             player_character.x += player_character.velocity
@@ -211,28 +214,28 @@ while run: # This is the game loop
             enemy_object.y = 600
             enemy_object.x = randint(170, 800)
             if enemy_object.rect.colliderect(enemyObject2.rect):
-                 enemy_object.x = randint(155, 300)
+                 enemy_object.x = randint(170, 300)
             ranVel = randint(0, 3)
             riseVelocity = rise_velocity[ranVel]
         if enemyObject2.y < 0:
             enemyObject2.y = 600
-            enemyObject2.x = randint(500, 855)
+            enemyObject2.x = randint(200, 855)
         if logEnemy.y < 0:
             logEnemy.y = 600
-            logEnemy.x = randint(150, 805)
+            logEnemy.x = randint(200, 750)
             if logEnemy.x == enemyObject2.x:
-                logEnemy.x = randint(150, 855)
+                logEnemy.x = randint(200, 750)
             elif logEnemy.x == enemy_object.x:
-                logEnemy.x = randint(150, 855)
+                logEnemy.x = randint(200, 750)
         if boulderEnemy.y < 0:
             boulderEnemy.y = 600
-            boulderEnemy.x = randint(150, 855)
+            boulderEnemy.x = randint(200, 780)
             if boulderEnemy.x == logEnemy.x:
-                boulderEnemy.x = randint(150, 855)
+                boulderEnemy.x = randint(200, 780)
             elif boulderEnemy.x == enemyObject2.x:
-                boulderEnemy.x = randint(150, 855)
+                boulderEnemy.x = randint(200, 780)
             elif boulderEnemy.x == enemy_object.x:
-                boulderEnemy.x = randint(150, 855)
+                boulderEnemy.x = randint(200, 780)
         redraw_GameWindow()
     while endgame:
         clock.tick(60)
