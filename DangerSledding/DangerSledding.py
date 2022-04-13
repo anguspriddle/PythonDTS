@@ -33,6 +33,7 @@ font=pygame.freetype.Font("Penguin.ttf", 50) # This loads a font to a variable, 
                                                                  # it to the size 50 pixels under the variable name 'font'
 font2=pygame.freetype.Font("Penguin.ttf", 40)
 font3=pygame.freetype.Font("Icecold.ttf", 20)
+font4 = pygame.freetype.Font("Icecold.ttf", 15)
 Gameover = mixer.Sound('GameOver.wav') # This loads audio to a variable name , for this one it loads the game over noise to
                                                                 # The variable name Gameover
 music = mixer.music.load('SledRacing.mp3') # This loads music to the game, and allows it to play continuously no matter what loop, unless
@@ -124,6 +125,7 @@ def redraw_GameWindow(): # These are functions, they are defined functions that 
     logEnemy.draw(window)
     boulderEnemy.draw(window)
     font3.render_to(window, (30, 10), "Score:{}" .format(Points)) # Displays score in the top right
+    font4.render_to(window, (13, 29), "High Score:{}" .format(high_score))
     pygame.display.update() # This updates the display in a loop, otherwise it would flash for 1 frame and stop.
 
 def endGame_window(): # This is a function that will draw the end game window
