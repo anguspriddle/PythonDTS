@@ -1,24 +1,28 @@
+# Danger Sledding
+# By Angus Priddle
+
 # Imports and setups
 import pygame
 from random import randint
 from pygame import mixer
-pygame.mixer.pre_init(44100, -16, 2, 6000)
+pygame.mixer.pre_init(44100, -16, 2, 6000) # this sets the frequency, sice, channels  and buffer for the audio used in pygame
 pygame.init()
 window = pygame.display.set_mode((1100, 645)) # Sets window size to 1100 x 645
 pygame.display.set_caption("Danger Sledding") # Sets window name
 icon = pygame.image.load('icon.png') # This line of code loads in an image to a variable name, for this it loads the
-                                      # Image used for the window icon
+                                                        # Image used for the window icon
 pygame.display.set_icon(icon) # Sets window icon
 # Variables And Lists.
 Points = 0
 width = 64
 height = 64
 lives = 3
+high_score = 0
 rise_velocity = [5, 7, 3, 8]
 ranVel = randint(0, 3)
 riseVelocity = rise_velocity[ranVel]
 bg = pygame.image.load('bg.png')
-char = pygame.image.load('racer.png')
+char = pygame.image.load('racer.png') # This is the player image.
 bad = pygame.image.load('rock.png')
 title = pygame.image.load('title.png')
 bad2 = pygame.image.load('rock2.png')
@@ -26,14 +30,14 @@ log = pygame.image.load('log.png')
 boulder = pygame.image.load('rock3.png')
 clock = pygame.time.Clock() # Makes the pygame clock function simply run under 'clock'
 font=pygame.freetype.Font("Penguin.ttf", 50) # This loads a font to a variable, name for this it uses the Penguin.ttf font, and loads
-                                             # it to the size 50 pixels under the variable name 'font'
+                                                                 # it to the size 50 pixels under the variable name 'font'
 font2=pygame.freetype.Font("Penguin.ttf", 40)
 font3=pygame.freetype.Font("Icecold.ttf", 20)
 Gameover = mixer.Sound('GameOver.wav') # This loads audio to a variable name , for this one it loads the game over noise to
-                                       # The variable name Gameover
+                                                                # The variable name Gameover
 music = mixer.music.load('SledRacing.mp3') # This loads music to the game, and allows it to play continuously no matter what loop, unless
-                                           # Changed by command, for this it loads SledRacing.mp3 to the variable 'music'
-pygame.mixer.music.play(-1) # This makes the music variable play on an infinite loop unless stopped by a later command
+                                                                # Changed by command, for this it loads SledRacing.mp3 to the variable 'music'
+pygame.mixer.music.play(-1)  # This makes the music variable play on an infinite loop unless stopped by a later command
 #Classes
 class player(object): # This is a class, a class holds information under one name or  'class', in order to store and call individual variables.
 # This class will be the class that will store all the information for the player character itself.
@@ -47,12 +51,12 @@ class player(object): # This is a class, a class holds information under one nam
         self.left = False
         self.right = False
         self.walkCount = 0
-        self.hitbox = (self.x + 27, self.y + 40, 42, 50)
-        self.rect = pygame.draw.rect(window, (0, 255, 255), self.hitbox, 2)
+        self.hitbox = (self.x + 26, self.y + 40, 44, 50)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(char, (self.x, self.y))
-        self.hitbox = (self.x + 27, self.y + 40, 42, 50)
-        self.rect = pygame.draw.rect(window, (0, 255, 255), self.hitbox, 2)
+        self.hitbox = (self.x + 26, self.y + 40, 44, 50)
+        self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
 
 
 class enemy(object): # This is the class for the first enemy
@@ -72,21 +76,21 @@ class enemy(object): # This is the class for the first enemy
 class enemy2(object): # This is the class for the second enemy
     def __init__(self, width, height):
         self.x=400
-        self.y=600
+        self.y=650
         self.width=width
         self.height=height
         self.rise=riseVelocity
-        self.hitbox = (self.x+30, self.y+50, 48, 35)
+        self.hitbox = (self.x+30, self.y+40, 35, 39)
         self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
     def draw(self, window):
         window.blit(bad2, (self.x, self.y)) # add image for second obstacle here
-        self.hitbox = (self.x + 30, self.y + 50, 48, 35)
+        self.hitbox = (self.x + 30, self.y + 40, 35, 39)
         self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
 
 class logEnemy(object): # This is the class for the longer log enemy
     def __init__(self, width, height):
         self.x=660
-        self.y=700
+        self.y=720
         self.width=width
         self.height=height
         self.hitbox = (self.x + 40, self.y+50, 100, 29)
@@ -102,11 +106,11 @@ class boulderEnemy(object): # This is the class for the boulder enemy
          self.y=700
          self.width=width
          self.height=height
-         self.hitbox= (self.x + 8, self.y+39, 70, 30)
+         self.hitbox= (self.x + 3, self.y+39, 70, 30)
          self.rect = pygame.draw.rect(window, (255, 255, 255), self.hitbox, 2)
      def draw(self, window):
             window.blit(boulder, (self.x, self.y))
-            self.hitbox = (self.x + 8, self.y + 39, 70, 30)
+            self.hitbox = (self.x + 3, self.y + 39, 70, 30)
             self.rect = pygame.draw.rect(window, (225, 255, 255), self.hitbox, 2)
 
 
@@ -127,6 +131,8 @@ def endGame_window(): # This is a function that will draw the end game window
     clock.tick(60)
     font.render_to(window, (300, 350), "You scored {} Points!" .format(Points))
     font2.render_to(window, (400, 150), "You Died!")
+    font2.render_to(window, (300,  400), "Your Best Score is {} Points!" .format(high_score))
+    font.render_to(window, (200, 500), "Press Space To Replay!")
     pygame.display.update()
 
 def mainMenu_window(): # This is the function that will display the main menu
@@ -140,10 +146,7 @@ def mainMenu_window(): # This is the function that will display the main menu
 run = True # Turns on run loop on open
 endgame = False
 alive = False
-mainMenu = True
-font=pygame.freetype.Font("Penguin.ttf", 50) # Sets up fonts for the score and end game screen.
-font2=pygame.freetype.Font("Penguin.ttf", 40)
-font3=pygame.freetype.Font("Icecold.ttf", 20)
+mainMenu = True # Displays main menu on launch
 player_character=player(64, 64) # Setting passthrough variables for the player and the enemies
 enemy_object=enemy(64, 64)
 enemyObject2 = enemy2(64, 64)
@@ -167,7 +170,6 @@ while run: # This is the game loop, the while statement means that while a varia
             alive = True
             mainMenu = False
             endgame = False
-
     while alive: # This is the loop for the main gameplay segment
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
@@ -175,6 +177,10 @@ while run: # This is the game loop, the while statement means that while a varia
                 alive = False
                 run = False
         if lives == 0:
+            enemy_object.y = 600
+            enemyObject2.y = 600
+            logEnemy.y = 600
+            boulderEnemy.y = 600
             alive = False
             playGameOver = True
             endgame = True
@@ -195,41 +201,41 @@ while run: # This is the game loop, the while statement means that while a varia
             run = False
             alive = False
         if player_character.rect.colliderect(enemy_object.rect) or player_character.rect.colliderect(enemyObject2.rect)\
-            or player_character.rect.colliderect(logEnemy.rect) or player_character.rect.colliderect(boulderEnemy.rect)\
-                                                                : # Upon collision, goes to end game screen and stops
-            lives -= 1
-            print(lives)
+            or player_character.rect.colliderect(logEnemy.rect) or player_character.rect.colliderect(boulderEnemy.rect):
+                lives -= 1# Upon collision, takes away lives.
         if enemy_object.y < 0: # Resets the Y value of the enemy and places it at a random x value
                                         # To have a constant flow of enemies one after the other
             Points += 1         # This adds a point every time the enemy is successfully avoided by the player
             enemy_object.y = 600
-            enemy_object.x = randint(170, 800)
-            if enemy_object.rect.colliderect(enemyObject2.rect):
-                 enemy_object.x = randint(170, 300)
             ranVel = randint(0, 3)
-            riseVelocity = rise_velocity[ranVel]
+            riseVelocity = rise_velocity[ranVel] # Randomises velocity for all obstacles every time a point is added
+            enemy_object.x = randint(170, 800)
+            if enemy_object.x == enemyObject2.x:
+                enemy_object.x = randint(170, 800)
+            elif enemy_object.x == logEnemy.x:
+                enemy_object.x = randint(170, 800)
+            elif enemy_object.x == boulderEnemy.x:
+                enemy_object.x = randint(170, 800)
         if enemyObject2.y < 0:
             enemyObject2.y = 600
             enemyObject2.x = randint(200, 855)
+            if enemyObject2.x == logEnemy.x:
+                enemyObject2.x = randint(200, 855)
+            elif enemyObject2.x == boulderEnemy.x:
+                enemyObject2.x = randint(200, 855)
         if logEnemy.y < 0:
             logEnemy.y = 600
             logEnemy.x = randint(200, 750)
-            if logEnemy.x == enemyObject2.x:
-                logEnemy.x = randint(200, 750)
-            elif logEnemy.x == enemy_object.x:
-                logEnemy.x = randint(200, 750)
+            if logEnemy.x == boulderEnemy.x:
+                enemyObject2.x = randint(200, 855)
         if boulderEnemy.y < 0:
             boulderEnemy.y = 600
             boulderEnemy.x = randint(200, 780)
-            if boulderEnemy.x == logEnemy.x:
-                boulderEnemy.x = randint(200, 780)
-            elif boulderEnemy.x == enemyObject2.x:
-                boulderEnemy.x = randint(200, 780)
-            elif boulderEnemy.x == enemy_object.x:
-                boulderEnemy.x = randint(200, 780)
         redraw_GameWindow()
     while endgame: # This is the loop for the endgame screen
         pygame.mixer.music.stop()
+        if high_score < Points:
+            high_score = Points
         if playGameOver:
             Gameover.play()
             playGameOver = False
@@ -237,7 +243,13 @@ while run: # This is the game loop, the while statement means that while a varia
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                endgame = False
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             run = False
             endgame = False
+        if keys[pygame.K_SPACE]:
+            endgame = False
+            Points = 0
+            lives = 3
+            alive = True
